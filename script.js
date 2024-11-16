@@ -14,7 +14,7 @@ function renderTasks() {
         taskElement.className = 'task';
         taskElement.innerHTML = `
           <span>${task}</span>
-          <button onclick="deleteTask('${section}', '${column}', ${index})">❌</button>
+          <button class="delete-btn" data-section="${section}" data-column="${column}" data-index="${index}">❌</button>
         `;
         taskElement.draggable = true;
 
@@ -31,9 +31,22 @@ function renderTasks() {
       });
     });
   });
+
+  // Add click and touch handlers for delete buttons
+  document.querySelectorAll('.delete-btn').forEach((btn) => {
+    btn.addEventListener('click', handleDeleteTask);
+    btn.addEventListener('touchstart', handleDeleteTask);
+  });
 }
 
-let draggedTask = null;
+function handleDeleteTask(e) {
+  const section = e.target.dataset.section;
+  const column = e.target.dataset.column;
+  const index = parseInt(e.target.dataset.index, 10);
+  tasks[section][column].splice(index, 1);
+  saveTasks();
+  renderTasks();
+}
 
 function handleTouchStart(e, section, column, index) {
   draggedTask = { section, column, index };
@@ -59,6 +72,8 @@ function handleTouchEnd(e) {
   draggedTask = null;
 }
 
+let draggedTask = null;
+
 function addTask(section, column) {
   const task = prompt('Enter your task:');
   if (task) {
@@ -69,12 +84,7 @@ function addTask(section, column) {
   }
 }
 
-function deleteTask(section, column, index) {
-  tasks[section][column].splice(index, 1);
-  saveTasks();
-  renderTasks();
-}
-
+// Add drop functionality for desktop
 document.querySelectorAll('.column').forEach((column) => {
   column.addEventListener('dragover', (e) => e.preventDefault());
   column.addEventListener('drop', (e) => {
