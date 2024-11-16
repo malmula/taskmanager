@@ -28,24 +28,26 @@ function renderTasks() {
           taskElement.addEventListener('touchstart', (e) => handleTouchStart(e, section, column, index));
           taskElement.addEventListener('touchend', handleTouchEnd);
 
+          // Add a click handler as a fallback for mobile devices like Safari
+          taskElement.addEventListener('click', (e) => handleClickDeleteTask(e));
+
           container.appendChild(taskElement);
         }
       });
     });
   });
 
-  // Attach delete functionality
+  // Attach delete functionality to buttons
   document.querySelectorAll('.delete-btn').forEach((btn) => {
-    // Use 'pointerdown' for desktop and 'touchstart' for mobile
     btn.addEventListener('pointerdown', handleDeleteTask);
     btn.addEventListener('touchstart', handleDeleteTask);
+    btn.addEventListener('click', handleDeleteTask); // Adding click event for mobile Safari
   });
 }
 
 function handleDeleteTask(e) {
   e.preventDefault(); // Prevent default behavior (important for mobile)
 
-  // Prevent multiple event listeners from triggering
   if (e.target.dataset.section && e.target.dataset.column && e.target.dataset.index) {
     const section = e.target.dataset.section;
     const column = e.target.dataset.column;
