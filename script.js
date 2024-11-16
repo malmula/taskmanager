@@ -34,12 +34,12 @@ function renderTasks() {
 
   // Add click and touch handlers for delete buttons
   document.querySelectorAll('.delete-btn').forEach((btn) => {
-    btn.addEventListener('click', handleDeleteTask);
-    btn.addEventListener('touchstart', handleDeleteTask);
+    btn.addEventListener('pointerdown', handleDeleteTask);
   });
 }
 
 function handleDeleteTask(e) {
+  e.preventDefault(); // Prevent any default touch behavior
   const section = e.target.dataset.section;
   const column = e.target.dataset.column;
   const index = parseInt(e.target.dataset.index, 10);
