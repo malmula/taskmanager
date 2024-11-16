@@ -5,12 +5,14 @@ function saveTasks() {
 }
 
 function renderTasks() {
+  // Iterate over the tasks sections (studying, praying)
   Object.keys(tasks).forEach((section) => {
     Object.keys(tasks[section]).forEach((column) => {
       const container = document.querySelector(`#${section} .column[data-column="${column}"] .tasks`);
-      container.innerHTML = '';
+      container.innerHTML = ''; // Clear current tasks
+      // Only render tasks that are not undefined or null
       tasks[section][column]?.forEach((task, index) => {
-        if (task !== undefined && task !== null) { // Ensure task has a valid value
+        if (task !== undefined && task !== null) { // Ensure task is valid
           const taskElement = document.createElement('div');
           taskElement.className = 'task';
           taskElement.innerHTML = `
@@ -24,7 +26,7 @@ function renderTasks() {
             e.dataTransfer.setData('text/plain', JSON.stringify({ section, column, index }));
           });
 
-          // Add touch drag-and-drop handlers for mobile
+          // Add touch handlers for mobile
           taskElement.addEventListener('touchstart', (e) => handleTouchStart(e, section, column, index));
           taskElement.addEventListener('touchend', handleTouchEnd);
 
@@ -41,15 +43,17 @@ function renderTasks() {
 }
 
 function handleDeleteTask(e) {
-  e.preventDefault(); // Prevent default behavior to avoid conflicts
+  e.preventDefault(); // Prevent default behavior (important for mobile)
   const section = e.target.dataset.section;
   const column = e.target.dataset.column;
   const index = parseInt(e.target.dataset.index, 10);
 
   if (tasks[section] && tasks[section][column]) {
-    tasks[section][column].splice(index, 1); // Remove the task
-    tasks[section][column] = tasks[section][column].filter((task) => task !== undefined && task !== null); // Clean up the array
-    saveTasks(); // Save the updated tasks
+    // Remove the task from the array
+    tasks[section][column].splice(index, 1);
+    // Clean up the array to avoid undefined/null values
+    tasks[section][column] = tasks[section][column].filter((task) => task !== undefined && task !== null);
+    saveTasks(); // Save the updated tasks to localStorage
     renderTasks(); // Re-render tasks to reflect the changes
   }
 }
@@ -68,9 +72,9 @@ function handleTouchEnd(e) {
     const taskIndex = draggedTask.index;
 
     if (newColumn) {
-      const task = tasks[section][oldColumn].splice(taskIndex, 1)[0];
+      const task = tasks[section][oldColumn].splice(taskIndex, 1)[0]; // Remove task from old column
       tasks[section][newColumn] = tasks[section][newColumn] || [];
-      tasks[section][newColumn].push(task);
+      tasks[section][newColumn].push(task); // Add task to new column
       saveTasks();
       renderTasks();
     }
@@ -96,10 +100,10 @@ document.querySelectorAll('.column').forEach((column) => {
   column.addEventListener('drop', (e) => {
     e.preventDefault();
     const { section, column: oldColumn, index } = JSON.parse(e.dataTransfer.getData('text/plain'));
-    const task = tasks[section][oldColumn].splice(index, 1)[0];
+    const task = tasks[section][oldColumn].splice(index, 1)[0]; // Remove task from the original column
     const newColumn = column.getAttribute('data-column');
     tasks[section][newColumn] = tasks[section][newColumn] || [];
-    tasks[section][newColumn].push(task);
+    tasks[section][newColumn].push(task); // Add task to the new column
     saveTasks();
     renderTasks();
   });
