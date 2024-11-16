@@ -10,24 +10,26 @@ function renderTasks() {
       const container = document.querySelector(`#${section} .column[data-column="${column}"] .tasks`);
       container.innerHTML = '';
       tasks[section][column]?.forEach((task, index) => {
-        const taskElement = document.createElement('div');
-        taskElement.className = 'task';
-        taskElement.innerHTML = `
-          <span>${task}</span>
-          <button class="delete-btn" data-section="${section}" data-column="${column}" data-index="${index}">❌</button>
-        `;
-        taskElement.draggable = true;
+        if (task !== undefined && task !== null) { // Ensure task has a valid value
+          const taskElement = document.createElement('div');
+          taskElement.className = 'task';
+          taskElement.innerHTML = `
+            <span>${task}</span>
+            <button class="delete-btn" data-section="${section}" data-column="${column}" data-index="${index}">❌</button>
+          `;
+          taskElement.draggable = true;
 
-        // Add drag-and-drop handlers for desktop
-        taskElement.addEventListener('dragstart', (e) => {
-          e.dataTransfer.setData('text/plain', JSON.stringify({ section, column, index }));
-        });
+          // Add drag-and-drop handlers for desktop
+          taskElement.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', JSON.stringify({ section, column, index }));
+          });
 
-        // Add touch drag-and-drop handlers for mobile
-        taskElement.addEventListener('touchstart', (e) => handleTouchStart(e, section, column, index));
-        taskElement.addEventListener('touchend', handleTouchEnd);
+          // Add touch drag-and-drop handlers for mobile
+          taskElement.addEventListener('touchstart', (e) => handleTouchStart(e, section, column, index));
+          taskElement.addEventListener('touchend', handleTouchEnd);
 
-        container.appendChild(taskElement);
+          container.appendChild(taskElement);
+        }
       });
     });
   });
@@ -46,6 +48,7 @@ function handleDeleteTask(e) {
 
   if (tasks[section] && tasks[section][column]) {
     tasks[section][column].splice(index, 1); // Remove the task
+    tasks[section][column] = tasks[section][column].filter((task) => task !== undefined && task !== null); // Clean up the array
     saveTasks(); // Save the updated tasks
     renderTasks(); // Re-render tasks to reflect the changes
   }
@@ -79,9 +82,9 @@ let draggedTask = null;
 
 function addTask(section, column) {
   const task = prompt('Enter your task:');
-  if (task) {
+  if (task && task.trim() !== '') {
     tasks[section][column] = tasks[section][column] || [];
-    tasks[section][column].push(task);
+    tasks[section][column].push(task.trim()); // Ensure no blank tasks are added
     saveTasks();
     renderTasks();
   }
