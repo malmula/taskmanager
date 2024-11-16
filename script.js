@@ -32,20 +32,23 @@ function renderTasks() {
     });
   });
 
-  // Add click and touch handlers for delete buttons
+  // Attach delete functionality
   document.querySelectorAll('.delete-btn').forEach((btn) => {
     btn.addEventListener('pointerdown', handleDeleteTask);
   });
 }
 
 function handleDeleteTask(e) {
-  e.preventDefault(); // Prevent any default touch behavior
+  e.preventDefault(); // Prevent default behavior to avoid conflicts
   const section = e.target.dataset.section;
   const column = e.target.dataset.column;
   const index = parseInt(e.target.dataset.index, 10);
-  tasks[section][column].splice(index, 1);
-  saveTasks();
-  renderTasks();
+
+  if (tasks[section] && tasks[section][column]) {
+    tasks[section][column].splice(index, 1); // Remove the task
+    saveTasks(); // Save the updated tasks
+    renderTasks(); // Re-render tasks to reflect the changes
+  }
 }
 
 function handleTouchStart(e, section, column, index) {
