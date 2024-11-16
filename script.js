@@ -5,14 +5,12 @@ function saveTasks() {
 }
 
 function renderTasks() {
-  // Iterate over the tasks sections (studying, praying)
   Object.keys(tasks).forEach((section) => {
     Object.keys(tasks[section]).forEach((column) => {
       const container = document.querySelector(`#${section} .column[data-column="${column}"] .tasks`);
       container.innerHTML = ''; // Clear current tasks
-      // Only render tasks that are not undefined or null
       tasks[section][column]?.forEach((task, index) => {
-        if (task !== undefined && task !== null) { // Ensure task is valid
+        if (task !== undefined && task !== null) {
           const taskElement = document.createElement('div');
           taskElement.className = 'task';
           taskElement.innerHTML = `
@@ -38,23 +36,28 @@ function renderTasks() {
 
   // Attach delete functionality
   document.querySelectorAll('.delete-btn').forEach((btn) => {
+    // Use 'pointerdown' for desktop and 'touchstart' for mobile
     btn.addEventListener('pointerdown', handleDeleteTask);
+    btn.addEventListener('touchstart', handleDeleteTask);
   });
 }
 
 function handleDeleteTask(e) {
   e.preventDefault(); // Prevent default behavior (important for mobile)
-  const section = e.target.dataset.section;
-  const column = e.target.dataset.column;
-  const index = parseInt(e.target.dataset.index, 10);
 
-  if (tasks[section] && tasks[section][column]) {
-    // Remove the task from the array
-    tasks[section][column].splice(index, 1);
-    // Clean up the array to avoid undefined/null values
-    tasks[section][column] = tasks[section][column].filter((task) => task !== undefined && task !== null);
-    saveTasks(); // Save the updated tasks to localStorage
-    renderTasks(); // Re-render tasks to reflect the changes
+  // Prevent multiple event listeners from triggering
+  if (e.target.dataset.section && e.target.dataset.column && e.target.dataset.index) {
+    const section = e.target.dataset.section;
+    const column = e.target.dataset.column;
+    const index = parseInt(e.target.dataset.index, 10);
+
+    if (tasks[section] && tasks[section][column]) {
+      // Remove the task from the array
+      tasks[section][column].splice(index, 1);
+      tasks[section][column] = tasks[section][column].filter((task) => task !== undefined && task !== null); // Clean up undefined or null values
+      saveTasks(); // Save the updated tasks to localStorage
+      renderTasks(); // Re-render tasks to reflect the changes
+    }
   }
 }
 
