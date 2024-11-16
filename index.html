@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Malmula Task Manager</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="task-manager">
+    <h1>Malmula Task Manager</h1>
+    <div class="section" id="studying">
+      <h2>Studying</h2>
+      <div class="columns">
+        <div class="column" data-column="todo">
+          <h3>To-Do</h3>
+          <div class="tasks"></div>
+          <button onclick="addTask('studying', 'todo')">+ Add Task</button>
+        </div>
+        <div class="column" data-column="in-progress">
+          <h3>In Progress</h3>
+          <div class="tasks"></div>
+        </div>
+        <div class="column" data-column="done">
+          <h3>Done</h3>
+          <div class="tasks"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section" id="praying">
+      <h2>Praying</h2>
+      <div class="columns">
+        <div class="column" data-column="todo">
+          <h3>To-Do</h3>
+          <div class="tasks"></div>
+          <button onclick="addTask('praying', 'todo')">+ Add Task</button>
+        </div>
+        <div class="column" data-column="in-progress">
+          <h3>In Progress</h3>
+          <div class="tasks"></div>
+        </div>
+        <div class="column" data-column="done">
+          <h3>Done</h3>
+          <div class="tasks"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
